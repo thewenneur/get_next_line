@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:05 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/04 22:39:25 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/04 23:36:40 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-int			get_next_line(int fd, char **line);
-char		*strjoin_ft(char const *s1, char const *s2);
-char		*strdup_ft(const char *s1);
-size_t		strlen_ft(const char *str);
-size_t		strlcpy_ft(char *dst, const char *src, unsigned int size);
-static char	*substr_ft(char const *s, unsigned int start, size_t len);
+int		get_next_line(int fd, char **line);
+char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strdup(const char *s1);
+size_t	ft_strlen(const char *str);
+size_t	ft_strlcpy(char *dst, const char *src, unsigned int size);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 #endif

@@ -6,13 +6,13 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 17:05:10 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/04 22:44:42 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/04 23:08:13 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	strlen_ft(const char *str)
+size_t	ft_strlen(const char *str)
 {
 	int i;
 
@@ -23,14 +23,14 @@ size_t	strlen_ft(const char *str)
 	return (i);
 }
 
-char	*strdup_ft(const char *s1)
+char	*ft_strdup(const char *s1)
 {
 	char	*s2;
 	int		i;
 	int		i_max;
 
 	i = -1;
-	i_max = strlen_ft((char *)s1) + 1;
+	i_max = ft_strlen((char *) s1) + 1;
 	if (!(s2 = malloc(sizeof(char) * i_max)))
 		return (NULL);
 	while (++i < i_max)
@@ -38,7 +38,7 @@ char	*strdup_ft(const char *s1)
 	return (s2);
 }
 
-char	*strjoin_ft(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
 	int		s1_len;
 	int		s2_len;
@@ -46,8 +46,8 @@ char	*strjoin_ft(char const *s1, char const *s2)
 	char	*dest;
 
 	i = -1;
-	s1_len = strlen_ft((char *)s1) - 1;
-	s2_len = strlen_ft((char *)s2) - 1;
+	s1_len = ft_strlen((char *) s1) - 1;
+	s2_len = ft_strlen((char *) s2) - 1;
 	if (s1 && s2)
 	{
 		if (!(dest = malloc(sizeof(char) * (s1_len + s2_len + 3))))
@@ -57,15 +57,15 @@ char	*strjoin_ft(char const *s1, char const *s2)
 		dest[i] = '\0';
 	}
 	else if (s1)
-		dest = strdup_ft(s1);
+		dest = ft_strdup(s1);
 	else if (s2)
-		dest = strdup_ft(s2);
+		dest = ft_strdup(s2);
 	else
 		return ("\0");
 	return (dest);
 }
 
-size_t	strlcpy_ft(char *dst, const char *src, unsigned int size)
+size_t	ft_strlcpy(char *dst, const char *src, unsigned int size)
 {
 	unsigned int i;
 	unsigned int length;

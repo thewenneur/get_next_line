@@ -6,19 +6,19 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/04 22:49:55 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/04 23:31:23 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*substr_ft(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*dest;
 	size_t	i;
 
 	i = 0;
-	if (start >= (unsigned int)strlen_ft((char *)s))
+	if (start >= (unsigned int) ft_strlen((char *) s))
 		len = 0;
 	if (!(dest = malloc(sizeof(char) * (len + 1))))
 		return (NULL);
@@ -41,7 +41,7 @@ static int	ft_init(char ***line, int fd, char **tmp)
 			return (ERROR);
 	}
 	else
-		strlcpy_ft(**line, *tmp, strlen_ft(*tmp));
+		ft_strlcpy(**line, *tmp, ft_strlen(*tmp));
 	return (OK);
 }
 
@@ -52,14 +52,14 @@ static int	output_to_line(char **tmp, int i, char ***line)
 		while ((*tmp)[i] && (*tmp)[i] != '\n')
 			i++;
 		if (!i)
-			**line = strdup_ft("");
+			**line = ft_strdup("");
 		else
-			**line = substr_ft(*tmp, 0, i);
+			**line = ft_substr(*tmp, 0, i);
 		*tmp = *tmp + i + 1;
 		return (NOT_EOF);
 	}
 	else
-		**line = strdup_ft("");
+		**line = ft_strdup("");
 	return (OK);
 }
 
@@ -76,7 +76,7 @@ int			get_next_line(int fd, char **line)
 	while ((return_value = read(fd, buff, BUFFER_SIZE)) > 0)
 	{
 		buff[return_value] = '\0';
-		tmp = strjoin_ft(tmp, buff);
+		tmp = ft_strjoin(tmp, buff);
 	}
 	if (output_to_line(&tmp, i, &line) == NOT_EOF)
 		return (NOT_EOF);
