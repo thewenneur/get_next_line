@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/04 22:42:44 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/04 22:49:55 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*substr_ft(char const *s, unsigned int start, size_t len)
 	size_t	i;
 
 	i = 0;
-	if (start >= (unsigned int) strlen_ft((char *)s))
+	if (start >= (unsigned int)strlen_ft((char *)s))
 		len = 0;
 	if (!(dest = malloc(sizeof(char) * (len + 1))))
 		return (NULL);
