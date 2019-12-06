@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/06 23:32:13 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/07 00:19:39 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,15 @@ char		*ft_substr(char const *s, unsigned int start, size_t len)
 	return (dest);
 }
 
-static int	ft_init(char ***line, int fd, char **tmp)
+static int	ft_init(char ***line, int fd, char **tmp, char **buff)
 {
 	if (!*line || fd == -1)
 	{
 		*line = NULL;
 		return (ERROR);
 	}
+	if (!(*buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
+		return (ERROR);
 	if (!*tmp)
 	{
 		if (!(*tmp = malloc(sizeof(char) * BUFFER_SIZE + 1)))
@@ -77,18 +79,20 @@ static int	output_to_line(char **tmp, int i, char ***line)
 int			get_next_line(int fd, char **line)
 {
 	static char	*tmp;
-	char		buff[BUFFER_SIZE + 1];
+	char		*buff;
 	int			return_value;
 	int			i;
 
 	i = 0;
-	if (ft_init(&line, fd, &tmp) == ERROR)
+	if (ft_init(&line, fd, &tmp, &buff) == ERROR)
 		return (ERROR);
 	while ((return_value = read(fd, buff, BUFFER_SIZE)) > 0)
 	{
 		buff[return_value] = '\0';
 		tmp = ft_strjoin(tmp, buff);
 	}
+	free(buff);
+	buff = NULL;
 	if (return_value == ERROR)
 	{
 		line = NULL;
