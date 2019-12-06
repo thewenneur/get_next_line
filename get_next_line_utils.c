@@ -30,7 +30,7 @@ char	*ft_strdup(const char *s1)
 	int		i_max;
 
 	i = -1;
-	i_max = ft_strlen((char *) s1) + 1;
+	i_max = ft_strlen((char *)s1) + 1;
 	if (!(s2 = malloc(sizeof(char) * i_max)))
 		return (NULL);
 	while (++i < i_max)
@@ -46,8 +46,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char	*dest;
 
 	i = -1;
-	s1_len = ft_strlen((char *) s1) - 1;
-	s2_len = ft_strlen((char *) s2) - 1;
+	s1_len = ft_strlen((char *)s1) - 1;
+	s2_len = ft_strlen((char *)s2) - 1;
 	if (s1 && s2)
 	{
 		if (!(dest = malloc(sizeof(char) * (s1_len + s2_len + 3))))

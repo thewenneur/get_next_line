@@ -6,19 +6,19 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/04 23:31:23 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/06 23:32:13 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char		*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*dest;
 	size_t	i;
 
 	i = 0;
-	if (start >= (unsigned int) ft_strlen((char *) s))
+	if (start >= (unsigned int)ft_strlen((char *)s))
 		len = 0;
 	if (!(dest = malloc(sizeof(char) * (len + 1))))
 		return (NULL);
@@ -34,29 +34,40 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 static int	ft_init(char ***line, int fd, char **tmp)
 {
 	if (!*line || fd == -1)
+	{
+		*line = NULL;
 		return (ERROR);
+	}
 	if (!*tmp)
 	{
 		if (!(*tmp = malloc(sizeof(char) * BUFFER_SIZE + 1)))
 			return (ERROR);
+		else
+			return (OK);
 	}
-	else
-		ft_strlcpy(**line, *tmp, ft_strlen(*tmp));
+	if (!(**line = malloc(sizeof(char) * ft_strlen(*tmp))))
+		return (ERROR);
+	ft_strlcpy(**line, *tmp, ft_strlen(*tmp));
 	return (OK);
 }
 
 static int	output_to_line(char **tmp, int i, char ***line)
 {
+	int	t;
+
+	t = 0;
 	if (*tmp[i])
 	{
 		while ((*tmp)[i] && (*tmp)[i] != '\n')
 			i++;
+		if ((*tmp)[i] == '\n')
+			t = 1;
 		if (!i)
 			**line = ft_strdup("");
 		else
 			**line = ft_substr(*tmp, 0, i);
 		*tmp = *tmp + i + 1;
-		return (NOT_EOF);
+		return (!(**tmp) && !t ? OK : NOT_EOF);
 	}
 	else
 		**line = ft_strdup("");
@@ -77,6 +88,11 @@ int			get_next_line(int fd, char **line)
 	{
 		buff[return_value] = '\0';
 		tmp = ft_strjoin(tmp, buff);
+	}
+	if (return_value == ERROR)
+	{
+		line = NULL;
+		return (ERROR);
 	}
 	if (output_to_line(&tmp, i, &line) == NOT_EOF)
 		return (NOT_EOF);
