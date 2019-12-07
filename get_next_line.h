@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:05 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/07 15:39:25 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/07 15:43:15 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,16 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-int		get_next_line(int fd, char **line);
-char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_strdup(const char *s1);
-size_t	ft_strlen(const char *str);
-size_t	ft_strlcpy(char *dst, const char *src, unsigned int size);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
+typedef struct		s_list
+{
+	int				*fd;
+	char			*tmp;
+	struct s_list	*next;
+}					t_list;
+int					get_next_line(int fd, char **line);
+char				*ft_strjoin(char const *s1, char const *s2);
+char				*ft_strdup(const char *s1);
+size_t				ft_strlen(const char *str);
+size_t				ft_strlcpy(char *dst, const char *src, unsigned int size);
+char				*ft_substr(char const *s, unsigned int start, size_t len);
 #endif
