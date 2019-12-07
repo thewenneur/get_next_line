@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/07 00:19:39 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/07 15:18:49 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char		*ft_substr(char const *s, unsigned int start, size_t len)
 
 static int	ft_init(char ***line, int fd, char **tmp, char **buff)
 {
-	if (!*line || fd == -1)
+	if (!*line || fd == -1 || read(fd, NULL, 0) < 0)
 	{
 		*line = NULL;
 		return (ERROR);
