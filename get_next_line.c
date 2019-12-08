@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/07 15:18:49 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/08 21:18:37 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,20 +76,56 @@ static int	output_to_line(char **tmp, int i, char ***line)
 	return (OK);
 }
 
+static int init_list(t_list **tmp, int fd)
+{
+	int		i;
+	t_list	*ptr;
+
+	i = 42;
+	if (!*tmp)
+	{
+		if (!(*tmp = malloc(sizeof(t_list))) ||
+			!((*tmp)->fd = malloc(sizeof(int))) ||
+			!((*tmp)->tmp = malloc(sizeof(char) * BUFFER_SIZE + 1)))
+			return (ERROR);
+		(*tmp)->next = NULL;
+		*(*tmp)->fd = fd;
+		return (OK);
+	}
+	else
+	{//TODO: Add a way to check if this fd isn't already read a once;
+		ptr = *tmp;
+		while (ptr->next != NULL)
+		{
+			if (*ptr->fd != fd)
+				ptr = ptr + i * sizeof(t_list);
+			else
+				break;
+		}
+		if (*ptr->fd != fd)
+			;//TODO: Add a New list here
+	}
+	if (!(*tmp)->fd)
+		*(*tmp)->fd = fd;
+	return (OK);
+}
+
 int			get_next_line(int fd, char **line)
 {
-	static char	*tmp;
-	char		*buff;
-	int			return_value;
-	int			i;
+	static t_list	*tmp;
+	char			*buff;
+	int				return_value;
+	int				i;
 
 	i = 0;
-	if (ft_init(&line, fd, &tmp, &buff) == ERROR)
+	if (init_list(&tmp, fd) == ERROR)
 		return (ERROR);
-	while ((return_value = read(fd, buff, BUFFER_SIZE)) > 0)
+	if (ft_init(&line, *tmp->fd, &tmp->tmp, &buff) == ERROR)
+		return (ERROR);
+	while ((return_value = read(*tmp->fd, buff, BUFFER_SIZE)) > 0)
 	{
 		buff[return_value] = '\0';
-		tmp = ft_strjoin(tmp, buff);
+		tmp->tmp = ft_strjoin(tmp->tmp, buff);
 	}
 	free(buff);
 	buff = NULL;
@@ -98,7 +134,7 @@ int			get_next_line(int fd, char **line)
 		line = NULL;
 		return (ERROR);
 	}
-	if (output_to_line(&tmp, i, &line) == NOT_EOF)
+	if (output_to_line(&tmp->tmp, i, &line) == NOT_EOF)
 		return (NOT_EOF);
 	return (OK);
 }
