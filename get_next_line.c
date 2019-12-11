@@ -6,73 +6,50 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/09 18:30:57 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/11 22:31:18 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char		*ft_substr(char const *s, unsigned int start, size_t len)
+static int	ft_is_eol(char *tmp, int check_line)
 {
-	char	*dest;
-	size_t	i;
+	char	*ptr;
 
-	i = 0;
-	if (start >= (unsigned int)ft_strlen((char *)s))
-		len = 0;
-	if (!(dest = malloc(sizeof(char) * (len + 1))))
-		return (NULL);
-	while (i < len && s[start + i])
+	ptr = tmp;
+	if (!tmp)
+		return (-1);
+	tmp--;
+	while (*(++tmp))
 	{
-		dest[i] = s[start + i];
-		i++;
+		if (check_line && *tmp == '\n')
+			return (int)((tmp - ptr));
 	}
-	dest[i] = '\0';
-	return (dest);
+	return (!check_line ? (int)(tmp - ptr) : -1);
 }
 
-static int	ft_init(char ***line, int fd, char **tmp, char **buff)
+static int	ft_init(int fd, char ***line, char **buff)
 {
-	if (!*line || fd == -1 || read(fd, NULL, 0) < 0)
+	if (!*line || read(fd, NULL, 0) < 0 || BUFFER_SIZE < 1)
 	{
 		*line = NULL;
 		return (ERROR);
 	}
 	if (!(*buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
 		return (ERROR);
-	if (!*tmp)
-	{
-		if (!(*tmp = malloc(sizeof(char) * BUFFER_SIZE + 1)))
-			return (ERROR);
-		else
-			return (OK);
-	}
-	if (!(**line = malloc(sizeof(char) * ft_strlen(*tmp))))
-		return (ERROR);
-	ft_strlcpy(**line, *tmp, ft_strlen(*tmp));
 	return (OK);
 }
 
-static int	output_to_line(char **tmp, int i, char ***line)
+static int	ft_set_line(char **line, char **tmp)
 {
-	int	t;
-
-	t = 0;
-	if (*tmp[i])
+	if (ft_is_eol(*tmp, 1) != -1)
 	{
-		while ((*tmp)[i] && (*tmp)[i] != '\n')
-			i++;
-		if ((*tmp)[i] == '\n')
-			t = 1;
-		if (!i)
-			**line = ft_strdup("");
-		else
-			**line = ft_substr(*tmp, 0, i);
-		*tmp = *tmp + i + 1;
-		return (!(**tmp) && !t ? OK : NOT_EOF);
+		*line = ft_substr(*tmp, 0, ft_is_eol(*tmp, 1));
+		*tmp = *tmp + ft_is_eol(*tmp, 1) + 1;
+		return (NOT_EOF);
 	}
-	else
-		**line = ft_strdup("");
+	*line = ft_strdup(*tmp ? *tmp : "");
+	*tmp = *tmp + ft_is_eol(*tmp, 0) + 1;
 	return (OK);
 }
 
@@ -80,25 +57,22 @@ int			get_next_line(int fd, char **line)
 {
 	static char	*tmp;
 	char		*buff;
-	int			return_value;
-	int			i;
+	int			ret;
 
-	i = 0;
-	if (ft_init(&line, fd, &tmp, &buff) == ERROR)
+	if (ft_init(fd, &line, &buff) == ERROR)
 		return (ERROR);
-	while ((return_value = read(fd, buff, BUFFER_SIZE)) > 0)
+	while ((ret = read(fd, buff, BUFFER_SIZE)) > 0)
 	{
-		buff[return_value] = '\0';
+		buff[ret] = '\0';
 		tmp = ft_strjoin(tmp, buff);
+		if (ft_is_eol(tmp, 1) != -1 && ret < BUFFER_SIZE)
+			break ;
 	}
-	free(buff);
-	buff = NULL;
-	if (return_value == ERROR)
+	ft_destroy(&buff);
+	if (ret == -1)
 	{
 		line = NULL;
 		return (ERROR);
 	}
-	if (output_to_line(&tmp, i, &line) == NOT_EOF)
-		return (NOT_EOF);
-	return (OK);
+	return (ft_set_line(line, &tmp) == NOT_EOF ? NOT_EOF : OK);
 }

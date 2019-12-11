@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:05 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/07 15:43:15 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/11 22:31:11 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 int					get_next_line(int fd, char **line);
+void				ft_destroy(char **trash);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strdup(const char *s1);
 size_t				ft_strlen(const char *str);

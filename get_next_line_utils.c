@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 17:05:10 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/04 23:08:13 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/11 22:32:22 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@ size_t	ft_strlen(const char *str)
 		while (str[i])
 			i++;
 	return (i);
+}
+
+void	ft_destroy(char **trash)
+{
+	free(*trash);
+	*trash = NULL;
 }
 
 char	*ft_strdup(const char *s1)
@@ -55,6 +61,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		while (++i <= (s1_len + s2_len + 1))
 			dest[i] = i <= s1_len ? s1[i] : s2[i - (s1_len + 1)];
 		dest[i] = '\0';
+		free((char *)s1);
 	}
 	else if (s1)
 		dest = ft_strdup(s1);
@@ -65,24 +72,21 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (dest);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, unsigned int size)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	unsigned int i;
-	unsigned int length;
+	char	*dest;
+	size_t	i;
 
-	length = 0;
 	i = 0;
-	while (i < size - 1 && src[i] != '\0' && size != 0)
+	if (start >= (unsigned int)ft_strlen((char *)s))
+		len = 0;
+	if (!(dest = malloc(sizeof(char) * (len + 1))))
+		return (NULL);
+	while (i < len && s[start + i])
 	{
-		dst[i] = src[i];
+		dest[i] = s[start + i];
 		i++;
 	}
-	if (size != 0)
-		dst[i] = '\0';
-	while (*src != '\0')
-	{
-		length++;
-		src++;
-	}
-	return (length);
+	dest[i] = '\0';
+	return (dest);
 }
