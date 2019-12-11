@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/11 22:31:18 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/11 23:53:00 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,22 @@ static int	ft_is_eol(char *tmp, int check_line)
 	return (!check_line ? (int)(tmp - ptr) : -1);
 }
 
-static int	ft_init(int fd, char ***line, char **buff)
+static int	ft_init(int fd, char ***line, char **tmp, char **buff)
 {
 	if (!*line || read(fd, NULL, 0) < 0 || BUFFER_SIZE < 1)
 	{
 		*line = NULL;
 		return (ERROR);
 	}
+	if (!*tmp || **tmp == '\0')
+		if (!(*tmp = malloc(sizeof(char) * 1)))
+			return (ERROR);
 	if (!(*buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
 		return (ERROR);
 	return (OK);
 }
 
-static int	ft_set_line(char **line, char **tmp)
+static int	ft_set_line(char **line, char **tmp, int ret)
 {
 	if (ft_is_eol(*tmp, 1) != -1)
 	{
@@ -50,7 +53,7 @@ static int	ft_set_line(char **line, char **tmp)
 	}
 	*line = ft_strdup(*tmp ? *tmp : "");
 	*tmp = *tmp + ft_is_eol(*tmp, 0) + 1;
-	return (OK);
+	return (ret ? NOT_EOF : OK);
 }
 
 int			get_next_line(int fd, char **line)
@@ -59,7 +62,7 @@ int			get_next_line(int fd, char **line)
 	char		*buff;
 	int			ret;
 
-	if (ft_init(fd, &line, &buff) == ERROR)
+	if (ft_init(fd, &line, &tmp, &buff) == ERROR)
 		return (ERROR);
 	while ((ret = read(fd, buff, BUFFER_SIZE)) > 0)
 	{
@@ -74,5 +77,5 @@ int			get_next_line(int fd, char **line)
 		line = NULL;
 		return (ERROR);
 	}
-	return (ft_set_line(line, &tmp) == NOT_EOF ? NOT_EOF : OK);
+	return (ft_set_line(line, &tmp, ret) == NOT_EOF ? NOT_EOF : OK);
 }
