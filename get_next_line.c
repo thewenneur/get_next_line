@@ -6,11 +6,24 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/11 23:53:00 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/12 01:02:52 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+void		*ft_calloc(size_t count, size_t size)
+{
+	void	*memory;
+	size_t	c;
+
+	if (!(memory = malloc(size * count)))
+		return (NULL);
+	c = -1;
+	while ((unsigned long)(c -= -1) < size * count)
+		*((char *)memory + c) = 0;
+	return (memory);
+}
 
 static int	ft_is_eol(char *tmp, int check_line)
 {
@@ -18,14 +31,12 @@ static int	ft_is_eol(char *tmp, int check_line)
 
 	ptr = tmp;
 	if (!tmp)
-		return (-1);
+		return (ERROR);
 	tmp--;
 	while (*(++tmp))
-	{
 		if (check_line && *tmp == '\n')
 			return (int)((tmp - ptr));
-	}
-	return (!check_line ? (int)(tmp - ptr) : -1);
+	return (!check_line ? (int)(tmp - ptr) : ERROR);
 }
 
 static int	ft_init(int fd, char ***line, char **tmp, char **buff)
@@ -36,7 +47,7 @@ static int	ft_init(int fd, char ***line, char **tmp, char **buff)
 		return (ERROR);
 	}
 	if (!*tmp || **tmp == '\0')
-		if (!(*tmp = malloc(sizeof(char) * 1)))
+		if (!(*tmp = ft_calloc(sizeof(char), 1)))
 			return (ERROR);
 	if (!(*buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
 		return (ERROR);
@@ -45,14 +56,13 @@ static int	ft_init(int fd, char ***line, char **tmp, char **buff)
 
 static int	ft_set_line(char **line, char **tmp, int ret)
 {
-	if (ft_is_eol(*tmp, 1) != -1)
+	if (ft_is_eol(*tmp, 1) != ERROR)
 	{
 		*line = ft_substr(*tmp, 0, ft_is_eol(*tmp, 1));
 		*tmp = *tmp + ft_is_eol(*tmp, 1) + 1;
 		return (NOT_EOF);
 	}
 	*line = ft_strdup(*tmp ? *tmp : "");
-	*tmp = *tmp + ft_is_eol(*tmp, 0) + 1;
 	return (ret ? NOT_EOF : OK);
 }
 
@@ -68,7 +78,7 @@ int			get_next_line(int fd, char **line)
 	{
 		buff[ret] = '\0';
 		tmp = ft_strjoin(tmp, buff);
-		if (ft_is_eol(tmp, 1) != -1 && ret < BUFFER_SIZE)
+		if (ft_is_eol(tmp, 1) != ERROR && ret < BUFFER_SIZE)
 			break ;
 	}
 	ft_destroy(&buff);
