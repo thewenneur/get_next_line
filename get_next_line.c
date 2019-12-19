@@ -6,24 +6,11 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/12 01:02:52 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/19 18:29:24 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-void		*ft_calloc(size_t count, size_t size)
-{
-	void	*memory;
-	size_t	c;
-
-	if (!(memory = malloc(size * count)))
-		return (NULL);
-	c = -1;
-	while ((unsigned long)(c -= -1) < size * count)
-		*((char *)memory + c) = 0;
-	return (memory);
-}
 
 static int	ft_is_eol(char *tmp, int check_line)
 {
@@ -46,20 +33,22 @@ static int	ft_init(int fd, char ***line, char **tmp, char **buff)
 		*line = NULL;
 		return (ERROR);
 	}
-	if (!*tmp || **tmp == '\0')
-		if (!(*tmp = ft_calloc(sizeof(char), 1)))
-			return (ERROR);
 	if (!(*buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
 		return (ERROR);
+	if (!*tmp)
+		if (!(*tmp = malloc(sizeof(char) * BUFFER_SIZE + 1)))
+			return (ERROR);
 	return (OK);
 }
 
 static int	ft_set_line(char **line, char **tmp, int ret)
 {
-	if (ft_is_eol(*tmp, 1) != ERROR)
+	int	i;
+
+	if ((i = ft_is_eol(*tmp, 1)) != ERROR)
 	{
-		*line = ft_substr(*tmp, 0, ft_is_eol(*tmp, 1));
-		*tmp = *tmp + ft_is_eol(*tmp, 1) + 1;
+		*line = ft_substr(*tmp, 0, i);
+		*tmp = *tmp + i + 1;
 		return (NOT_EOF);
 	}
 	*line = ft_strdup(*tmp ? *tmp : "");
@@ -78,7 +67,7 @@ int			get_next_line(int fd, char **line)
 	{
 		buff[ret] = '\0';
 		tmp = ft_strjoin(tmp, buff);
-		if (ft_is_eol(tmp, 1) != ERROR && ret < BUFFER_SIZE)
+		if (ft_is_eol(tmp, 1) != ERROR)
 			break ;
 	}
 	ft_destroy(&buff);
@@ -87,5 +76,11 @@ int			get_next_line(int fd, char **line)
 		line = NULL;
 		return (ERROR);
 	}
-	return (ft_set_line(line, &tmp, ret) == NOT_EOF ? NOT_EOF : OK);
+	if (ft_set_line(line, &tmp, ret) == OK)
+	{
+		ret = 42;
+		tmp = 0;
+		//free(tmp);
+	}
+	return (ret == 42 ? OK : NOT_EOF);
 }
