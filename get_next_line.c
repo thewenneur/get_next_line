@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/19 18:29:24 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/19 19:41:40 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,8 @@ int			get_next_line(int fd, char **line)
 	}
 	if (ft_set_line(line, &tmp, ret) == OK)
 	{
-		ret = 42;
+		ret = -42;
 		tmp = 0;
-		//free(tmp);
 	}
-	return (ret == 42 ? OK : NOT_EOF);
+	return (ret == -42 ? OK : NOT_EOF);
 }
