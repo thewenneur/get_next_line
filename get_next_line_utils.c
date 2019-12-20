@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 17:05:10 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/19 18:30:35 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/20 20:11:18 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,6 @@ size_t	ft_strlen(const char *str)
 		while (str[i])
 			i++;
 	return (i);
-}
-
-void	ft_destroy(char **trash)
-{
-	free(*trash);
-	*trash = NULL;
 }
 
 char	*ft_strdup(const char *s1)
@@ -44,7 +38,13 @@ char	*ft_strdup(const char *s1)
 	return (s2);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+void	ft_destroy(char **trash)
+{
+	free(*trash);
+	*trash = NULL;
+}
+
+char	*ft_strjoin(char **s1, char *s2)
 {
 	int		s1_len;
 	int		s2_len;
@@ -52,18 +52,23 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char	*dest;
 
 	i = -1;
-	s1_len = ft_strlen((char *)s1) - 1;
+	s1_len = ft_strlen((char *)(*s1)) - 1;
 	s2_len = ft_strlen((char *)s2) - 1;
-	if (s1 && s2)
+	if (*s1 && s2)
 	{
 		if (!(dest = malloc(sizeof(char) * (s1_len + s2_len + 3))))
 			return (NULL);
 		while (++i <= (s1_len + s2_len + 1))
-			dest[i] = i <= s1_len ? s1[i] : s2[i - (s1_len + 1)];
+			dest[i] = i <= s1_len ? (*s1)[i] : s2[i - (s1_len + 1)];
 		dest[i] = '\0';
+	//	if (**s1)
+	//		ft_destroy(s1);
 	}
-	else if (s1)
-		dest = ft_strdup(s1);
+	else if (*s1)
+	//{
+		dest = ft_strdup(*s1);
+	//	ft_destroy(s1);
+	//}
 	else if (s2)
 		dest = ft_strdup(s2);
 	else

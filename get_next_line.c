@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/19 19:41:40 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/20 20:10:12 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	ft_is_eol(char *tmp, int check_line)
 	return (!check_line ? (int)(tmp - ptr) : ERROR);
 }
 
-static int	ft_init(int fd, char ***line, char **tmp, char **buff)
+static int	ft_init(int fd, char ***line, char **buff)
 {
 	if (!*line || read(fd, NULL, 0) < 0 || BUFFER_SIZE < 1)
 	{
@@ -35,9 +35,6 @@ static int	ft_init(int fd, char ***line, char **tmp, char **buff)
 	}
 	if (!(*buff = malloc(sizeof(char) * BUFFER_SIZE + 1)))
 		return (ERROR);
-	if (!*tmp)
-		if (!(*tmp = malloc(sizeof(char) * BUFFER_SIZE + 1)))
-			return (ERROR);
 	return (OK);
 }
 
@@ -61,12 +58,12 @@ int			get_next_line(int fd, char **line)
 	char		*buff;
 	int			ret;
 
-	if (ft_init(fd, &line, &tmp, &buff) == ERROR)
+	if (ft_init(fd, &line, &buff) == ERROR)
 		return (ERROR);
 	while ((ret = read(fd, buff, BUFFER_SIZE)) > 0)
 	{
 		buff[ret] = '\0';
-		tmp = ft_strjoin(tmp, buff);
+		tmp = ft_strjoin(&tmp, buff);
 		if (ft_is_eol(tmp, 1) != ERROR)
 			break ;
 	}
