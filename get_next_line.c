@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/20 21:41:15 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/20 21:53:43 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static int	ft_set_line(char **line, char **tmp, int ret)
 		return (NOT_EOF);
 	}
 	*line = ft_strdup(*tmp ? *tmp : "");
+	ft_destroy(tmp);
 	return (ret ? NOT_EOF : OK);
 }
 
