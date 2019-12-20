@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 17:05:10 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/20 20:11:18 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/20 21:53:48 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,18 +61,15 @@ char	*ft_strjoin(char **s1, char *s2)
 		while (++i <= (s1_len + s2_len + 1))
 			dest[i] = i <= s1_len ? (*s1)[i] : s2[i - (s1_len + 1)];
 		dest[i] = '\0';
-	//	if (**s1)
-	//		ft_destroy(s1);
+		free(*s1);
 	}
 	else if (*s1)
-	//{
+	{
 		dest = ft_strdup(*s1);
-	//	ft_destroy(s1);
-	//}
-	else if (s2)
-		dest = ft_strdup(s2);
+		free(*s1);
+	}
 	else
-		return ("\0");
+		dest = ft_strdup(s2);
 	return (dest);
 }
 

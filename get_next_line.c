@@ -6,7 +6,7 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/20 20:10:12 by tbrouill         ###   ########.fr       */
+/*   Updated: 2019/12/20 21:41:15 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,16 @@ static int	ft_init(int fd, char ***line, char **buff)
 
 static int	ft_set_line(char **line, char **tmp, int ret)
 {
-	int	i;
+	int		i;
+	char	*old;
 
 	if ((i = ft_is_eol(*tmp, 1)) != ERROR)
 	{
 		*line = ft_substr(*tmp, 0, i);
+		old = *tmp;
 		*tmp = *tmp + i + 1;
+		*tmp = ft_strdup(*tmp);
+		free(old);
 		return (NOT_EOF);
 	}
 	*line = ft_strdup(*tmp ? *tmp : "");
@@ -54,7 +58,7 @@ static int	ft_set_line(char **line, char **tmp, int ret)
 
 int			get_next_line(int fd, char **line)
 {
-	static char	*tmp;
+	static char	*tmp = NULL;
 	char		*buff;
 	int			ret;
 
