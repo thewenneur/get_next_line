@@ -6,13 +6,13 @@
 /*   By: tbrouill <tbrouill@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 16:44:20 by tbrouill          #+#    #+#             */
-/*   Updated: 2019/12/20 21:53:43 by tbrouill         ###   ########.fr       */
+/*   Updated: 2020/01/04 17:34:13 by tbrouill         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static int	ft_is_eol(char *tmp, int check_line)
+static int	ft_is_eol(char *tmp)
 {
 	char	*ptr;
 
@@ -21,9 +21,9 @@ static int	ft_is_eol(char *tmp, int check_line)
 		return (ERROR);
 	tmp--;
 	while (*(++tmp))
-		if (check_line && *tmp == '\n')
-			return (int)((tmp - ptr));
-	return (!check_line ? (int)(tmp - ptr) : ERROR);
+		if (*tmp == '\n')
+			return ((int)(tmp - ptr));
+	return (ERROR);
 }
 
 static int	ft_init(int fd, char ***line, char **buff)
@@ -43,7 +43,7 @@ static int	ft_set_line(char **line, char **tmp, int ret)
 	int		i;
 	char	*old;
 
-	if ((i = ft_is_eol(*tmp, 1)) != ERROR)
+	if ((i = ft_is_eol(*tmp)) != ERROR)
 	{
 		*line = ft_substr(*tmp, 0, i);
 		old = *tmp;
@@ -62,6 +62,7 @@ int			get_next_line(int fd, char **line)
 	static char	*tmp = NULL;
 	char		*buff;
 	int			ret;
+	int			a;
 
 	if (ft_init(fd, &line, &buff) == ERROR)
 		return (ERROR);
@@ -69,19 +70,11 @@ int			get_next_line(int fd, char **line)
 	{
 		buff[ret] = '\0';
 		tmp = ft_strjoin(&tmp, buff);
-		if (ft_is_eol(tmp, 1) != ERROR)
+		if (ft_is_eol(tmp) != ERROR)
 			break ;
 	}
 	ft_destroy(&buff);
-	if (ret == -1)
-	{
-		line = NULL;
-		return (ERROR);
-	}
-	if (ft_set_line(line, &tmp, ret) == OK)
-	{
-		ret = -42;
+	if ((a = ft_set_line(line, &tmp, ret)) == OK)
 		tmp = 0;
-	}
-	return (ret == -42 ? OK : NOT_EOF);
+	return (a);
 }
